@@ -604,3 +604,9 @@ body {
   white-space: nowrap;
 }
 
+/* ===== ESCALA GLOBAL DO JOGO ===== */
+#game-scale {
+  width: 1920px;
+  height: 1080px;
+  transform-origin: top left;
+}

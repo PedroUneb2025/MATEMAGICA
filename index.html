@@ -295,157 +295,180 @@
 </head>
 
 <body class="tela-inicial">
+  <div id="game-scale">
 
-  <img src="images/IN.png" class="img-topo">
 
-  <!-- 🎵 ÁUDIO QUE *DEVE* AUTOPLAY IMEDIATAMENTE -->
-  <audio id="bgm" src="musics/Pelas Estradas Mágicas.mp3" loop autoplay></audio>
+    <img src="images/IN.png" class="img-topo">
 
-  <div class="container">
-    <div class="botoes-iniciais">
-      <button class="btn-sec" id="btnOpcoes">Opções</button>
-      <button class="btn-jogar" id="btnJogar">JOGAR</button>
-      <button class="btn-sec" id="btnCreditos">Créditos</button>
-    </div>
-  </div>
+    <!-- 🎵 ÁUDIO QUE *DEVE* AUTOPLAY IMEDIATAMENTE -->
 
-  <!-- MODAL OPÇÕES -->
-  <div class="modal" id="modalOpcoes">
-    <div class="caixa">
 
-      <div class="linha">
-        <label>Som</label>
-        <input type="range" id="rangeSom" min="0" max="100" value="70">
-        <span id="valorSom">70%</span>
+    <div class="container">
+      <div class="botoes-iniciais">
+        <button class="btn-sec" id="btnOpcoes">Opções</button>
+        <button class="btn-jogar" id="btnJogar">JOGAR</button>
+        <button class="btn-sec" id="btnCreditos">Créditos</button>
       </div>
-
-      <div class="linha">
-        <label>Brilho</label>
-        <input type="range" id="rangeBrilho" min="50" max="150" value="100">
-        <span id="valorBrilho">100%</span>
-      </div>
-
-      <button class="btn-sec" id="fecharOpcoes">Fechar</button>
     </div>
-  </div>
 
-  <!-- MODAL CRÉDITOS -->
-  <div class="modal" id="modalCreditos">
-    <div class="caixa">
+    <!-- MODAL OPÇÕES -->
+    <div class="modal" id="modalOpcoes">
+      <div class="caixa">
 
-      <div class="conteudo-creditos">
-        <b>
-          <h3>Gestora:</h3>
-        </b>
-        <p>Letícia Veras</p>
-        <p><b>
-            <h3>Design:</h3>
-          </b></p>
-        <p>Larinete Xavier</p>
-        <p><b>
-            <h3>Programadores:</h3>
-          </b></p>
-        <p>Caick Ruan, Pedro Sérgio</p>
+        <div class="linha">
+          <label>Som</label>
+          <input type="range" id="rangeSom" min="0" max="100" value="70">
+          <span id="valorSom">70%</span>
+        </div>
+
+        <div class="linha">
+          <label>Brilho</label>
+          <input type="range" id="rangeBrilho" min="50" max="150" value="100">
+          <span id="valorBrilho">100%</span>
+        </div>
+
+        <button class="btn-sec" id="fecharOpcoes">Fechar</button>
       </div>
-
-      <button class="btn-sec" id="fecharCreditos">Fechar</button>
-
     </div>
-  </div>
+
+    <!-- MODAL CRÉDITOS -->
+    <div class="modal" id="modalCreditos">
+      <div class="caixa">
+
+        <div class="conteudo-creditos">
+          <b>
+            <h3>Gestora:</h3>
+          </b>
+          <p>Letícia Veras</p>
+          <p><b>
+              <h3>Design:</h3>
+            </b></p>
+          <p>Larinete Xavier</p>
+          <p><b>
+              <h3>Programadores:</h3>
+            </b></p>
+          <p>Caick Ruan, Pedro Sérgio</p>
+        </div>
+
+        <button class="btn-sec" id="fecharCreditos">Fechar</button>
+
+      </div>
+    </div>
 
 
-  <!-- Controles da página -->
-  <script>
-    const audio = document.getElementById("bgm");
+    <!-- Controles da página -->
+    <script>
+      const audio = document.getElementById("bgm");
 
-    /* ------------------------------
-       TENTAR AUTOPLAY IMEDIATO
-    --------------------------------*/
-    window.addEventListener("load", () => {
-      const prefs = JSON.parse(localStorage.getItem("mm_prefs") || "{}");
+      /* ------------------------------
+         TENTAR AUTOPLAY IMEDIATO
+      --------------------------------*/
+      window.addEventListener("load", () => {
+        const prefs = JSON.parse(localStorage.getItem("mm_prefs") || "{}");
 
-      const volume = (prefs.som !== undefined) ? prefs.som : 70;
-      const brilho = (prefs.brilho !== undefined) ? prefs.brilho : 100;
+        const volume = (prefs.som !== undefined) ? prefs.som : 70;
+        const brilho = (prefs.brilho !== undefined) ? prefs.brilho : 100;
 
-      document.documentElement.style.filter = 'brightness(' + (brilho / 100) + ')';
+        document.documentElement.style.filter = 'brightness(' + (brilho / 100) + ')';
 
-      audio.volume = volume / 100;
+        audio.volume = volume / 100;
 
-      audio.play().catch(err => {
-        console.warn("⚠️ Autoplay bloqueado. O navegador exige interação.", err);
-      });
-    });
-
-    // 🔊 Garante que a música começa na PRIMEIRA interação do usuário
-    function iniciarMusicaAoInteragir() {
-      if (!audio) return;
-
-      // tenta tocar só se ainda estiver pausado
-      if (audio.paused) {
         audio.play().catch(err => {
-          console.warn("Ainda não foi possível tocar o áudio:", err);
+          console.warn("⚠️ Autoplay bloqueado. O navegador exige interação.", err);
         });
+      });
+
+      // 🔊 Garante que a música começa na PRIMEIRA interação do usuário
+      function iniciarMusicaAoInteragir() {
+        if (!audio) return;
+
+        // tenta tocar só se ainda estiver pausado
+        if (audio.paused) {
+          audio.play().catch(err => {
+            console.warn("Ainda não foi possível tocar o áudio:", err);
+          });
+        }
+
+        // remove os listeners depois da primeira tentativa bem-sucedida
+        window.removeEventListener("click", iniciarMusicaAoInteragir);
+        window.removeEventListener("keydown", iniciarMusicaAoInteragir);
+        window.removeEventListener("touchstart", iniciarMusicaAoInteragir);
       }
 
-      // remove os listeners depois da primeira tentativa bem-sucedida
-      window.removeEventListener("click", iniciarMusicaAoInteragir);
-      window.removeEventListener("keydown", iniciarMusicaAoInteragir);
-      window.removeEventListener("touchstart", iniciarMusicaAoInteragir);
-    }
-
-    // qualquer clique, toque ou tecla libera a música
-    window.addEventListener("click", iniciarMusicaAoInteragir);
-    window.addEventListener("keydown", iniciarMusicaAoInteragir);
-    window.addEventListener("touchstart", iniciarMusicaAoInteragir);
+      // qualquer clique, toque ou tecla libera a música
+      window.addEventListener("click", iniciarMusicaAoInteragir);
+      window.addEventListener("keydown", iniciarMusicaAoInteragir);
+      window.addEventListener("touchstart", iniciarMusicaAoInteragir);
 
 
 
-    /* ------------------------------
-       SALVAR PREFERÊNCIAS DE SOM/BRILHO
-    --------------------------------*/
-    const rangeSom = document.getElementById("rangeSom");
-    const rangeBrilho = document.getElementById("rangeBrilho");
-    const valorSom = document.getElementById("valorSom");
-    const valorBrilho = document.getElementById("valorBrilho");
+      /* ------------------------------
+         SALVAR PREFERÊNCIAS DE SOM/BRILHO
+      --------------------------------*/
+      const rangeSom = document.getElementById("rangeSom");
+      const rangeBrilho = document.getElementById("rangeBrilho");
+      const valorSom = document.getElementById("valorSom");
+      const valorBrilho = document.getElementById("valorBrilho");
 
-    function salvarPrefs() {
-      const prefs = {
-        som: parseInt(rangeSom.value),
-        brilho: parseInt(rangeBrilho.value)
+      function salvarPrefs() {
+        const prefs = {
+          som: parseInt(rangeSom.value),
+          brilho: parseInt(rangeBrilho.value)
+        };
+        localStorage.setItem("mm_prefs", JSON.stringify(prefs));
+      }
+
+      rangeSom.oninput = () => {
+        valorSom.textContent = rangeSom.value + "%";
+        audio.volume = rangeSom.value / 100;
+        salvarPrefs();
       };
-      localStorage.setItem("mm_prefs", JSON.stringify(prefs));
-    }
 
-    rangeSom.oninput = () => {
-      valorSom.textContent = rangeSom.value + "%";
-      audio.volume = rangeSom.value / 100;
-      salvarPrefs();
-    };
+      rangeBrilho.oninput = () => {
+        valorBrilho.textContent = rangeBrilho.value + "%";
+        document.documentElement.style.filter = 'brightness(' + (rangeBrilho.value / 100) + ')';
+        salvarPrefs();
+      };
 
-    rangeBrilho.oninput = () => {
-      valorBrilho.textContent = rangeBrilho.value + "%";
-      document.documentElement.style.filter = 'brightness(' + (rangeBrilho.value / 100) + ')';
-      salvarPrefs();
-    };
+      /* ------------------------------
+         MODAIS
+      --------------------------------*/
+      const modalOpcoes = document.getElementById("modalOpcoes");
+      const modalCreditos = document.getElementById("modalCreditos");
 
-    /* ------------------------------
-       MODAIS
-    --------------------------------*/
-    const modalOpcoes = document.getElementById("modalOpcoes");
-    const modalCreditos = document.getElementById("modalCreditos");
+      document.getElementById("btnOpcoes").onclick = () => modalOpcoes.style.display = "flex";
+      document.getElementById("btnCreditos").onclick = () => modalCreditos.style.display = "flex";
 
-    document.getElementById("btnOpcoes").onclick = () => modalOpcoes.style.display = "flex";
-    document.getElementById("btnCreditos").onclick = () => modalCreditos.style.display = "flex";
+      document.getElementById("fecharOpcoes").onclick = () => modalOpcoes.style.display = "none";
+      document.getElementById("fecharCreditos").onclick = () => modalCreditos.style.display = "none";
 
-    document.getElementById("fecharOpcoes").onclick = () => modalOpcoes.style.display = "none";
-    document.getElementById("fecharCreditos").onclick = () => modalCreditos.style.display = "none";
+      document.getElementById("btnJogar").onclick = () => {
+        window.location.href = "personagem.html";
+      };
 
-    document.getElementById("btnJogar").onclick = () => {
-      window.location.href = "personagem.html";
-    };
+      (function corrigirAudio() {
+        const audio = document.getElementById("bgm");
+        if (!audio) return;
 
-  </script>
+        function iniciar() {
+          if (audio.paused) {
+            audio.play().catch(() => { });
+          }
+          document.removeEventListener("click", iniciar);
+          document.removeEventListener("keydown", iniciar);
+          document.removeEventListener("touchstart", iniciar);
+        }
 
+        document.addEventListener("click", iniciar, { once: true });
+        document.addEventListener("keydown", iniciar, { once: true });
+        document.addEventListener("touchstart", iniciar, { once: true });
+      })();
+      
+      
+
+
+    </script>
+  </div>
 </body>
 
 </html>

@@ -519,3 +519,40 @@ window.onload = function () {
     gerarCamposDeNome();
   }
 };
+
+function desbloquearAudio() {
+  audio.muted = false;
+  audio.volume = (JSON.parse(localStorage.getItem("mm_prefs") || "{}").som ?? 70) / 100;
+
+  audio.play().then(() => {
+    console.log("🎵 Música iniciada com sucesso");
+  }).catch(err => {
+    console.warn("Falha ao iniciar música:", err);
+  });
+
+  // remove após o primeiro clique
+  document.removeEventListener("click", desbloquearAudio);
+}
+
+document.addEventListener("click", desbloquearAudio, { once: true });
+
+
+(function () {
+  const audio = document.getElementById("bgm");
+  if (!audio) return;
+
+  audio.volume = 0.7;
+  audio.muted = false;
+  audio.preload = "auto";
+
+  const startAudio = () => {
+    audio.play()
+      .then(() => console.log("🎵 Áudio iniciado"))
+      .catch(err => console.error("❌ Falha ao tocar áudio:", err));
+
+    document.removeEventListener("pointerdown", startAudio);
+  };
+
+  // pointerdown é mais confiável que click
+  document.addEventListener("pointerdown", startAudio, { once: true });
+})();
